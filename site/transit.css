@@ -29,6 +29,11 @@
     font-size: 16px;
 }
 
+#warningpar {
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
 .step {
     font-size: 24px;
     padding-left: 2em;
