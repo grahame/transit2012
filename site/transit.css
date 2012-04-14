@@ -36,6 +36,10 @@
 
 .step {
     font-size: 24px;
-    padding-left: 2em;
+    padding-left: 40px;
+}
+
+.inline {
+    display: inline;
 }
 
