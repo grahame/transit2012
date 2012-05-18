@@ -1,45 +1,26 @@
-#logo {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-}
-
 #heading {
     font-family: 'Nova Round', sans-serif;
-    position: absolute;
-    left: 200px;
-    top: 24px;
+    text-align: center;
+    border-bottom: 1px solid black;
 }
 
 #hdr {
-    font-size: 48pt;
+    font-size: 300%;
 }
 
 #subhdr {
-    font-size: 16pt;
+    font-size: 200%;
 }
 
 #body {
     position: relative;
-    top: 200px;
-    font-size: 13pt;
-}
-
-.leader {
-    font-size: 16px;
-}
-
-#warningpar {
-    padding-left: 80px;
-    padding-right: 80px;
-}
-
-.step {
-    font-size: 24px;
-    padding-left: 40px;
+    left: 10%;
+    width: 80%;
+    font-size: large;
 }
 
 .inline {
     display: inline;
+    float: left;
 }
 
