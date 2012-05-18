@@ -22,5 +22,11 @@
 .inline {
     display: inline;
     float: left;
+    padding: 10px;
+}
+
+table {
+    font-size: large;
+    border: none;
 }
 
