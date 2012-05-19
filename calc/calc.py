@@ -217,9 +217,9 @@ def CalculateTime(Long,Lat,Par,Phase):
 
 def CalculateParallax():
     timeA1=HMStoDec(0, 0, 0)
-    timeA2=HMStoDec(13, 3, 47)
+    timeA2=HMStoDec(11, 3, 47)
     timeB1=HMStoDec(0, 0, 0)
-    timeB2=HMStoDec(14, 10, 49)
+    timeB2=HMStoDec(11, 10, 49)
     if timeA1>0:
         time1=timeA1
         time2=timeB1

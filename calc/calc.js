@@ -245,9 +245,9 @@ function CalculateTime(Long,Lat,Par,Phase)
 function CalculateParallax()
 {
     var timeA1=HMStoDec("0");
-    var timeA2=HMStoDec("13.03.47");
+    var timeA2=HMStoDec("11.03.47");
     var timeB1=HMStoDec("0");
-    var timeB2=HMStoDec("14.10.49");
+    var timeB2=HMStoDec("11.10.49");
     if (timeA1>0)
     {
         var time1=timeA1;
