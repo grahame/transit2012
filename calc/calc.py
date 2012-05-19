@@ -1,5 +1,5 @@
 # Source:
-# For the calculation of the contact times is made ​​use of the algorithm and the elements of Meeus Jean, "Transit" (Willmann-Bell, 1989).
+# For the calculation of the contact times is made use of the algorithm and the elements of Meeus Jean, "Transit" (Willmann-Bell, 1989).
 # The program code for calculating the contact time is based on code by Franco Martinelli and edited by Steven M. of Roode.
 # The determination of the solar parallax goes back to the principle that in 1716 by Edmond Halley was formulated.
 
