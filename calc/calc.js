@@ -242,99 +242,6 @@ function CalculateTime(Long,Lat,Par,Phase)
     return time[Phase]
 }
 
-function CalculateOvergang(Long,Lat,Par)
-{
-    var Tau=0;
-    var L=0;
-    var fuso=0
-    var DET=67
-    var Hgt=10;
-    var rsf=rhosinfi(Lat,Hgt);
-    var rcf=rhocosfi(Lat,Hgt);
-    var T=0;
-    for (var k=1; k<=5; k++) {
-        for (var rip=1; rip<=6; rip++) {
-            var Xa=ele11+ele12*T+ele13*(T*T)+ele14*(T*T*T);
-            var Ya=ele21+ele22*T+ele23*(T*T)+ele24*(T*T*T);
-            var Xpa=ele12+2*ele13*T+3*ele14*(T*T);
-            var Ypa=ele22+2*ele23*T+3*ele24*(T*T);
-            var da=ele31+ele32*T+ele33*(T*T);
-            da=da*rad;
-            var Ma=ele41+ele42*T+ele43*(T*T);
-            var db=ele51+ele52*T+ele53*(T*T);
-            db=db*rad;
-            var Mb=ele61+ele62*T+ele63*(T*T);
-            var Ra=ele71+ele72*T+ele73*(T*T);
-            var Dea=ele81+ele82*T+ele83*(T*T);
-            var Ha=Ma-Long-0.00417807*DET;
-            Ha=rad*Ha;
-            var Hb=Mb-Long-0.00417807*DET;
-            Hb=Hb*rad;	
-            var Zga=rsf*Math.sin(da)+rcf*Math.cos(Ha)*Math.cos(da);
-            var Zgb=rsf*Math.sin(db)+rcf*Math.cos(Hb)*Math.cos(db);
-            Ra=Ra-Zga/23455;
-            Dea=Dea-Zgb/23455;
-            var dx=-Par*rcf*((Math.sin(Ha)/Ra)-(Math.sin(Hb)/Dea));
-            var a=rsf*( (Math.cos(da)/Ra) - (Math.cos(db)/Dea) );
-            var b=-rcf*((Math.sin(da)*Math.cos(Ha))/Ra-(Math.sin(db)*Math.cos(Hb)/Dea));
-            var dy=Par*(a+b);
-            var dxp=-0.261*Par*rcf*(Math.cos(Ha)/Ra-Math.cos(Hb)/Dea);
-            var dyp=+0.261*Par*rcf*(Math.sin(da)*Math.sin(Ha)/Ra-Math.sin(db)*Math.sin(Hb)/Dea);
-            Xa=Xa+dx;
-            Xpa=Xpa+dxp;
-            Ya=Ya+dy;
-            Ypa=Ypa+dyp;
-            var sa=959.63/Ra;
-            var sb=8.41/Dea;
-            switch(k)
-            {
-                case 1:	L=sa+sb;
-                break;
-                case 2:	L=sa-sb;
-                break;
-                case 3:	L=sa-sb;
-                break;
-                case 4:	L=sa-sb;
-                break;
-                case 5:	L=sa+sb;
-                break;
-            }
-            var n2=Xpa*Xpa+Ypa*Ypa;
-            n=Math.sqrt(n2);	
-            var SM=(Xa*Ypa-Ya*Xpa)/(n*L);
-            if ( ((SM*SM)>1) && (k!=3)) {var TC=9999};
-            switch(k)
-            {
-                case 1:	Tau=-(Xa*Xpa+Ya*Ypa)/n2-(L/n)*Math.sqrt(1-SM*SM) ;
-                break;
-                case 2:	Tau=-((Xa*Xpa+Ya*Ypa)/n2)-((L/n)*Math.sqrt(1-(SM*SM)));
-                break;
-                case 3:	Tau=-((Xa*Xpa+Ya*Ypa)/n2);
-                break;
-                case 4:	Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*Math.sqrt(1-(SM*SM)));
-                break;
-                case 5:	Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*Math.sqrt(1-(SM*SM)));
-                break;
-            }
-            T=T+Tau; 
-        }
-        var TC=ele_T0+T+fuso;
-        TC=TC-DET/3600;
-        ElevationAzimuth(Lat,da*degrees,Ha*degrees);
-        var ang=Math.atan2(-Xa,Ya);
-        if (ang<0) {
-            ang=(ang+2*Math.PI)
-        };
-        time[k]=TC;
-        elevation[k]=Alt;
-        angle[k]=ang*degrees
-        afstand[k]=Math.sqrt((Xa*Xa)+(Ya*Ya));
-    }
-
-    var timeduration=(time[4]-time[2]);
-    return timeduration
-}
-
 function CalculateParallax()
 {
     var timeA1=HMStoDec("0");
@@ -360,7 +267,9 @@ function CalculateParallax()
         var longitude=parseFloat("5.0");
         longitude=-longitude;
         var latitude=parseFloat("52.0");
+        console.log("args " + longitude + " " + latitude + " " + parzon + " " + fase)
         var timeA=CalculateTime(longitude,latitude,parzon,fase);
+        console.log("timeA "+timeA);
         var longitude=parseFloat("20.0");
         longitude=-longitude;
         var latitude=parseFloat("-30.0");
