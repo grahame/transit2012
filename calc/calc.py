@@ -3,7 +3,8 @@
 # The program code for calculating the contact time is based on code by Franco Martinelli and edited by Steven M. of Roode.
 # The determination of the solar parallax goes back to the principle that in 1716 by Edmond Halley was formulated.
 
-import math
+import math, sys, csv
+from pprint import pprint
 
 degrees  = 180/math.pi
 rad =  1/degrees
@@ -69,175 +70,223 @@ elements_2012 = {
         '83':0.00000027
         }
 
-time=[0.] * 5
-elevation=[0.] * 5
-angle=[0.] * 5
-afstand=[0.] * 5
+def calculate_parallax(e, obs1, obs2):
+    time=[0.] * 5
+    elevation=[0.] * 5
+    angle=[0.] * 5
+    afstand=[0.] * 5
 
-def rhocosfi(Lat,Hgt):
-    U=math.atan(math.tan(rad*Lat)*0.99664719)
-    rhocfi=math.cos(U)+(Hgt/6378140)*math.cos(Lat*rad)
-    return rhocfi
+    def rhocosfi(Lat,Hgt):
+        U=math.atan(math.tan(rad*Lat)*0.99664719)
+        rhocfi=math.cos(U)+(Hgt/6378140)*math.cos(Lat*rad)
+        return rhocfi
 
-def rhosinfi(Lat,Hgt):
-    U=math.atan(math.tan(rad*Lat)*0.99664719)
-    rhosfi=0.99664719*math.sin(U)+(Hgt/6378140)*math.sin(Lat*rad)
-    return rhosfi
+    def rhosinfi(Lat,Hgt):
+        U=math.atan(math.tan(rad*Lat)*0.99664719)
+        rhosfi=0.99664719*math.sin(U)+(Hgt/6378140)*math.sin(Lat*rad)
+        return rhosfi
 
-def Sgn(n):
-    if n < 0:
-        return -1
+    def Sgn(n):
+        if n < 0:
+            return -1
+        else:
+            return 1
+
+    def CornerRounding(a):
+        I=math.floor(abs(a))
+        F=abs(a)-I
+        R=I%360
+        if Sgn(a) > 0:
+            return R+F
+        else:
+            return 360-(R+F)
+        return Ag
+
+    def FormatLD(afs):
+        return (math.floor((afs)*1000))/1000
+
+    def HMStoDec(h, m, s):
+        return h + m/60. + s/3600.
+
+    def ElevationAzimuth(Lat,Decl,TA):
+        TA=TA+360
+        TA=CornerRounding(TA)
+        if TA<180:
+            AP=TA
+        else:
+            AP=360-TA
+        D=math.sin(rad*Lat)*math.sin(rad*Decl)+math.cos(rad*Lat)*math.cos(rad*Decl)*math.cos(rad*AP)
+        Alt=degrees*math.asin(D)
+        D=(math.sin(rad*Decl)-math.sin(rad*Lat)*math.sin(rad*Alt))/(math.cos(rad*Lat)*math.cos(rad*Alt))
+        Az=degrees*math.acos(D)
+        if TA<180:
+            Az=360-abs(Az)
+        return Alt, Az
+
+    def CalculateTime(e,Long,Lat,Par,Phase):
+        Tau=0
+        L=0
+        fuso=0
+        DET=67
+        Hgt=10
+        rsf=rhosinfi(Lat,Hgt)
+        rcf=rhocosfi(Lat,Hgt)
+        T=0
+        for k in range(5):
+            for rip in range(7):
+                Xa=e['11']+e['12']*T+e['13']*(T*T)+e['14']*(T*T*T)
+                Ya=e['21']+e['22']*T+e['23']*(T*T)+e['24']*(T*T*T)
+                Xpa=e['12']+2*e['13']*T+3*e['14']*(T*T)
+                Ypa=e['22']+2*e['23']*T+3*e['24']*(T*T)
+                da=e['31']+e['32']*T+e['33']*(T*T)
+                da=da*rad
+                Ma=e['41']+e['42']*T+e['43']*(T*T)
+                db=e['51']+e['52']*T+e['53']*(T*T)
+                db=db*rad
+                Mb=e['61']+e['62']*T+e['63']*(T*T)
+                Ra=e['71']+e['72']*T+e['73']*(T*T)
+                Dea=e['81']+e['82']*T+e['83']*(T*T)
+                Ha=Ma-Long-0.00417807*DET
+                Ha=rad*Ha
+                Hb=Mb-Long-0.00417807*DET
+                Hb=Hb*rad;	
+                Zga=rsf*math.sin(da)+rcf*math.cos(Ha)*math.cos(da)
+                Zgb=rsf*math.sin(db)+rcf*math.cos(Hb)*math.cos(db)
+                Ra=Ra-Zga/23455
+                Dea=Dea-Zgb/23455
+                dx=-Par*rcf*((math.sin(Ha)/Ra)-(math.sin(Hb)/Dea))
+                a=rsf*( (math.cos(da)/Ra) - (math.cos(db)/Dea) )
+                b=-rcf*((math.sin(da)*math.cos(Ha))/Ra-(math.sin(db)*math.cos(Hb)/Dea))
+                dy=Par*(a+b)
+                dxp=-0.261*Par*rcf*(math.cos(Ha)/Ra-math.cos(Hb)/Dea)
+                dyp=+0.261*Par*rcf*(math.sin(da)*math.sin(Ha)/Ra-math.sin(db)*math.sin(Hb)/Dea)
+                Xa=Xa+dx
+                Xpa=Xpa+dxp
+                Ya=Ya+dy
+                Ypa=Ypa+dyp
+                sa=959.63/Ra
+                sb=8.41/Dea
+                if k == 0:
+                    L=sa+sb
+                elif k == 1:
+                    L=sa-sb
+                elif k == 2:
+                    L=sa-sb
+                elif k == 3:
+                    L=sa-sb
+                elif k == 4:
+                    L=sa+sb
+                n2=Xpa*Xpa+Ypa*Ypa
+                n=math.sqrt(n2);	
+                SM=(Xa*Ypa-Ya*Xpa)/(n*L)
+                if ((SM*SM)>1) and (k!=3):
+                    TC=9999
+                if k == 0:
+                    Tau=-(Xa*Xpa+Ya*Ypa)/n2-(L/n)*math.sqrt(1-SM*SM) 
+                elif k == 1:
+                    Tau=-((Xa*Xpa+Ya*Ypa)/n2)-((L/n)*math.sqrt(1-(SM*SM)))
+                elif k == 2:
+                    Tau=-((Xa*Xpa+Ya*Ypa)/n2)
+                elif k == 3:
+                    Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*math.sqrt(1-(SM*SM)))
+                elif k == 4:
+                    Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*math.sqrt(1-(SM*SM)))
+                T=T+Tau
+            TC=e['T0']+T+fuso
+            TC=TC-DET/3600
+            Alt, Az = ElevationAzimuth(Lat,da*degrees,Ha*degrees)
+            ang=math.atan2(-Xa,Ya)
+            if ang<0:
+                ang=(ang+2*math.pi)
+            time[k]=TC
+            elevation[k]=Alt
+            angle[k]=ang*degrees
+            afstand[k]=math.sqrt((Xa*Xa)+(Ya*Ya))
+        return time[Phase]
+
+    assert(obs1.ctype == obs2.ctype)
+
+    if obs1.ctype == "enter":
+        fase = 1
+    elif obs1.ctype == "left":
+        fase = 3
     else:
-        return 1
-
-def CornerRounding(a):
-    I=math.floor(abs(a))
-    F=abs(a)-I
-    R=I%360
-    if Sgn(a) > 0:
-        return R+F
-    else:
-        return 360-(R+F)
-    return Ag
-
-def FormatLD(afs):
-    return (math.floor((afs)*1000))/1000
-
-def HMStoDec(h, m, s):
-    return h + m/60. + s/3600.
-
-def ElevationAzimuth(Lat,Decl,TA):
-    TA=TA+360
-    TA=CornerRounding(TA)
-    if TA<180:
-        AP=TA
-    else:
-        AP=360-TA
-    D=math.sin(rad*Lat)*math.sin(rad*Decl)+math.cos(rad*Lat)*math.cos(rad*Decl)*math.cos(rad*AP)
-    Alt=degrees*math.asin(D)
-    D=(math.sin(rad*Decl)-math.sin(rad*Lat)*math.sin(rad*Alt))/(math.cos(rad*Lat)*math.cos(rad*Alt))
-    Az=degrees*math.acos(D)
-    if TA<180:
-        Az=360-abs(Az)
-    return Alt, Az
-
-def CalculateTime(e,Long,Lat,Par,Phase):
-    Tau=0
-    L=0
-    fuso=0
-    DET=67
-    Hgt=10
-    rsf=rhosinfi(Lat,Hgt)
-    rcf=rhocosfi(Lat,Hgt)
-    T=0
-    for k in range(5):
-        for rip in range(7):
-            Xa=e['11']+e['12']*T+e['13']*(T*T)+e['14']*(T*T*T)
-            Ya=e['21']+e['22']*T+e['23']*(T*T)+e['24']*(T*T*T)
-            Xpa=e['12']+2*e['13']*T+3*e['14']*(T*T)
-            Ypa=e['22']+2*e['23']*T+3*e['24']*(T*T)
-            da=e['31']+e['32']*T+e['33']*(T*T)
-            da=da*rad
-            Ma=e['41']+e['42']*T+e['43']*(T*T)
-            db=e['51']+e['52']*T+e['53']*(T*T)
-            db=db*rad
-            Mb=e['61']+e['62']*T+e['63']*(T*T)
-            Ra=e['71']+e['72']*T+e['73']*(T*T)
-            Dea=e['81']+e['82']*T+e['83']*(T*T)
-            Ha=Ma-Long-0.00417807*DET
-            Ha=rad*Ha
-            Hb=Mb-Long-0.00417807*DET
-            Hb=Hb*rad;	
-            Zga=rsf*math.sin(da)+rcf*math.cos(Ha)*math.cos(da)
-            Zgb=rsf*math.sin(db)+rcf*math.cos(Hb)*math.cos(db)
-            Ra=Ra-Zga/23455
-            Dea=Dea-Zgb/23455
-            dx=-Par*rcf*((math.sin(Ha)/Ra)-(math.sin(Hb)/Dea))
-            a=rsf*( (math.cos(da)/Ra) - (math.cos(db)/Dea) )
-            b=-rcf*((math.sin(da)*math.cos(Ha))/Ra-(math.sin(db)*math.cos(Hb)/Dea))
-            dy=Par*(a+b)
-            dxp=-0.261*Par*rcf*(math.cos(Ha)/Ra-math.cos(Hb)/Dea)
-            dyp=+0.261*Par*rcf*(math.sin(da)*math.sin(Ha)/Ra-math.sin(db)*math.sin(Hb)/Dea)
-            Xa=Xa+dx
-            Xpa=Xpa+dxp
-            Ya=Ya+dy
-            Ypa=Ypa+dyp
-            sa=959.63/Ra
-            sb=8.41/Dea
-            if k == 0:
-                L=sa+sb
-            elif k == 1:
-                L=sa-sb
-            elif k == 2:
-                L=sa-sb
-            elif k == 3:
-                L=sa-sb
-            elif k == 4:
-                L=sa+sb
-            n2=Xpa*Xpa+Ypa*Ypa
-            n=math.sqrt(n2);	
-            SM=(Xa*Ypa-Ya*Xpa)/(n*L)
-            if ((SM*SM)>1) and (k!=3):
-                TC=9999
-            if k == 0:
-                Tau=-(Xa*Xpa+Ya*Ypa)/n2-(L/n)*math.sqrt(1-SM*SM) 
-            elif k == 1:
-                Tau=-((Xa*Xpa+Ya*Ypa)/n2)-((L/n)*math.sqrt(1-(SM*SM)))
-            elif k == 2:
-                Tau=-((Xa*Xpa+Ya*Ypa)/n2)
-            elif k == 3:
-                Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*math.sqrt(1-(SM*SM)))
-            elif k == 4:
-                Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*math.sqrt(1-(SM*SM)))
-            T=T+Tau
-        TC=e['T0']+T+fuso
-        TC=TC-DET/3600
-        Alt, Az = ElevationAzimuth(Lat,da*degrees,Ha*degrees)
-        ang=math.atan2(-Xa,Ya)
-        if ang<0:
-            ang=(ang+2*math.pi)
-        time[k]=TC
-        elevation[k]=Alt
-        angle[k]=ang*degrees
-        afstand[k]=math.sqrt((Xa*Xa)+(Ya*Ya))
-    return time[Phase]
-
-def CalculateParallax(e):
-    timeA1=HMStoDec(0, 0, 0)
-    timeA2=HMStoDec(11, 3, 47)
-    timeB1=HMStoDec(0, 0, 0)
-    timeB2=HMStoDec(11, 10, 49)
-    if timeA1>0:
-        time1=timeA1
-        time2=timeB1
-        fase=1
-    if timeA2>0:
-        time1=timeA2
-        time2=timeB2
-        fase=3
+        raise Exception("ctype invalid")
+    time1=HMStoDec(*obs1.time)
+    time2=HMStoDec(*obs2.time)
     waarneemverschil=time1-time2
     parzon=8.794148
+
+    def calc_tm(obs):
+        return CalculateTime(e,-obs.lng,obs.lat,parzon,fase)
+
     for n in range(5):
-        longitude=float("5.0")
-        longitude=-longitude
-        latitude=float("52.0")
-        timeA=CalculateTime(e,longitude,latitude,parzon,fase)
-        longitude=float("20.0")
-        longitude=-longitude
-        latitude=float("-30.0")
-        timeB=CalculateTime(e,longitude,latitude,parzon,fase)
+        timeA=calc_tm(obs1)
+        timeB=calc_tm(obs2)
         rekenverschil=(timeA-timeB)
         parzon=((waarneemverschil/rekenverschil)*parzon)
     fout=((0.00278/waarneemverschil)*parzon)
     au=(math.floor(6378.14/((parzon/3600)*rad)))
     parallax = FormatLD(parzon)
     error=abs(FormatLD(fout))
-    print(au)
-    print(parallax)
-    print(error)
+    return au, parallax, error
+
+class Observation:
+    def __init__(self, doc_id, username, ctype, lat, lng, h, m, s):
+        self.doc_id = int(doc_id)
+        self.username = username
+        self.ctype = ctype
+        self.lat = float(lat)
+        self.lng = float(lng)
+        self.time = (int(h), int(m), int(s))
+
+    def __repr__(self):
+        return "@%s %s: %gN%gE %d:%d:%d" % (self.username, self.ctype[0], self.lat, self.lng, self.time[0], self.time[1], self.time[2])
+
+class Result:
+    def __init__(self, obs1, obs2, res):
+        self.obs1 = obs1
+        self.obs2 = obs2
+        self.au, self.parallax, self.error = res
+
+    def __repr__(self):
+        return "%s %s: %skm" % (self.obs1, self.obs2, self.au)
 
 if __name__ == '__main__':
-
-CalculateParallax(elements_2004)
+    data = sys.argv[1]
+    enter = []
+    left = []
+    with open(data) as fd:
+        for row in csv.reader(fd):
+            # later observations will override; this is good, people can correct typos
+            o = Observation(*row)
+            if o.ctype == "enter":
+                enter.append(o)
+            elif o.ctype == "left":
+                left.append(o)
+    def weed_dups(l):
+        winning = {}
+        l.sort(key=lambda o: o.doc_id)
+        for o in l:
+            winning[(o.username, o.lat, o.lng)] = o.doc_id
+        winners = set(winning.values())
+        r = []
+        for obs in l:
+            if obs.doc_id in winners:
+                r.append(obs)
+        return r
+    enter = weed_dups(enter)
+    left = weed_dups(left)
+    def pair_pick(l):
+        yield l[0], l[1]
+    results = []
+    def calculate(it):
+        for obs1, obs2 in it:
+            results.append(Result(obs1, obs2, calculate_parallax(elements_2004, obs1, obs2)))
+    calculate(pair_pick(enter))
+    calculate(pair_pick(left))
+    avg = sum([t.au for t in results]) / len(results)
+    pprint(results)
+    print("average result from chosen pairs: 1 AU = %skm" % (avg))
 
 
