@@ -105,6 +105,37 @@ steps from the Queensland Government</a> should be followed.
     //searchWidget();
 </script>
 
+<h3>How it works</h3>
+
+<p>
+All of the tweeted observations are logged by a server, which stores them in a database.
+The server periodically takes every pair of observations (that has greater than five 
+degrees of latitude between them) and applies Delisle's method to calculate the AU.
+All of these results are then averaged, to produce the number that you will see updating
+in real time as observations come in.
+</p>
+
+<p>
+
+<h3>Contact and Credits</h3>
+
+<p>
+The code to perform the AU calculation was kindly made available by Steven van Roode of
+<a href="http://transitofvenus.nl/">transitofvenus.nl</a>. As I've modified this code 
+extensively to integrate it, any bugs are mine! The code for this site is 
+<a href="https://github.com/grahame/transit2012">available on github</a>.
+</p>
+
+<p>
+You can contact the project on twitter (<a href="https://twitter.com/venusobs">@venusobs</a>)
+or email me: grahame@angrygoats.net
+</p>
+
+<p>
+<a href="https://twitter.com/venusobs" class="twitter-follow-button" data-show-count="false">Follow @venusobs</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+</p>
+
 <div class="fb-like" data-href="http://transit2012.org" data-send="false" data-width="450" data-show-faces="true" data-font="verdana"></div>
 
 <div>
