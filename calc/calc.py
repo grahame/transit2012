@@ -5,6 +5,7 @@
 
 import math, sys, csv
 from pprint import pprint
+from itertools import combinations
 
 degrees  = 180/math.pi
 rad =  1/degrees
@@ -250,7 +251,7 @@ class Result:
         self.au, self.parallax, self.error = res
 
     def __repr__(self):
-        return "%s %s: %skm" % (self.obs1, self.obs2, self.au)
+        return "%s %s: %skm (%s %s)" % (self.obs1, self.obs2, self.au, self.parallax, self.error)
 
 if __name__ == '__main__':
     data = sys.argv[1]
@@ -278,7 +279,9 @@ if __name__ == '__main__':
     enter = weed_dups(enter)
     left = weed_dups(left)
     def pair_pick(l):
-        yield l[0], l[1]
+        for obs1, obs2 in combinations(l, 2):
+            if abs(obs1.lat - obs2.lat) > 10:
+                yield obs1, obs2
     results = []
     def calculate(it):
         for obs1, obs2 in it:
