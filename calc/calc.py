@@ -254,7 +254,15 @@ class Result:
         return "%s %s: %skm (%s %s)" % (self.obs1, self.obs2, self.au, self.parallax, self.error)
 
 if __name__ == '__main__':
-    data = sys.argv[1]
+    year = sys.argv[1]
+    data = sys.argv[2]
+
+    if year == '2004':
+        elements = elements_2004
+    elif year == '2012':
+        elements = elements_2012
+    else:
+        sys.exit(1)
     enter = []
     left = []
     with open(data) as fd:
@@ -285,11 +293,14 @@ if __name__ == '__main__':
     results = []
     def calculate(it):
         for obs1, obs2 in it:
-            results.append(Result(obs1, obs2, calculate_parallax(elements_2004, obs1, obs2)))
+            results.append(Result(obs1, obs2, calculate_parallax(elements, obs1, obs2)))
     calculate(pair_pick(enter))
     calculate(pair_pick(left))
-    avg = sum([t.au for t in results]) / len(results)
+    if len(results) > 1:
+        avg = sum([t.au for t in results]) / len(results)
+    else:
+        avg = 0.0
     pprint(results)
-    print("average result from chosen pairs: 1 AU = %skm" % (avg))
+    print("%s average result from chosen pairs: 1 AU = %skm" % (year, avg))
 
 
