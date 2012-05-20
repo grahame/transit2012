@@ -267,16 +267,13 @@ function CalculateParallax()
         var longitude=parseFloat("5.0");
         longitude=-longitude;
         var latitude=parseFloat("52.0");
-        console.log("args " + longitude + " " + latitude + " " + parzon + " " + fase)
         var timeA=CalculateTime(longitude,latitude,parzon,fase);
-        console.log("timeA "+timeA);
         var longitude=parseFloat("20.0");
         longitude=-longitude;
         var latitude=parseFloat("-30.0");
         var timeB=CalculateTime(longitude,latitude,parzon,fase);
         var rekenverschil=(timeA-timeB);
         var parzon=((waarneemverschil/rekenverschil)*parzon);
-        console.log(parzon);
     }
     var fout=((0.00278/waarneemverschil)*parzon);;
     var au=(Math.floor(6378.14/((parzon/3600)*rad)));

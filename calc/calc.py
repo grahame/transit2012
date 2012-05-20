@@ -9,78 +9,65 @@ degrees  = 180/math.pi
 rad =  1/degrees
 
 # 2004
-ele_T0=8
+elements_2004 = {
+        'T0' : 8,
+        '11' : -229.4542,
+        '12' : 233.6932,
+        '13' : 0.01512,
+        '14' : -0.000079,
+        '21' : -589.2948,
+        '22' : -56.9904,
+        '23' : 0.06953,
+        '24' : 0.000071,
+        '31' : 22.8860,
+        '32' : 0.0036,
+        '33' : -0.00001,
+        '41' : 300.2378,
+        '42' : 14.9980,
+        '43' : 0.0,
+        '51' : 22.7223,
+        '52' : -0.0122,
+        '53' : 0.0,
+        '61' : 300.1687,
+        '62' : 15.0684,
+        '63' : 0.0,
+        '71' : 1.0150844,
+        '72' : 0.0000053,
+        '73' : 0.0,
+        '81' : 0.2888829,
+        '82' : 0.0000006,
+        '83' : 0.00000027
+    }
 
-ele11=-229.4542
-ele12=233.6932
-ele13=0.01512
-ele14=-0.000079
-
-ele21=-589.2948
-ele22=-56.9904
-ele23=0.06953
-ele24=0.000071
-
-ele31=22.8860
-ele32=0.0036
-ele33=-0.00001
-
-ele41=300.2378
-ele42=14.9980
-ele43=0.0
-
-ele51=22.7223
-ele52=-0.0122
-ele53=0.0
-
-ele61=300.1687
-ele62=15.0684
-ele63=0.0
-
-ele71=1.0150844
-ele72=0.0000053
-ele73=0.0
-
-ele81=0.2888829
-ele82=0.0000006
-ele83=0.00000027
-
-## 2012
-## ele_T0=2
-## 
-## ele11=253.0583
-## ele12=232.6966
-## ele13=0.01583
-## ele14=-0.000080
-## 
-## ele21=507.0395
-## ele22=-60.4263
-## ele23=0.06675
-## ele24=0.000076
-## 
-## ele31=22.6775
-## ele32=0.0042
-## ele33=-0.00001
-## 
-## ele41=210.3335
-## ele42=14.9981
-## ele43=0.0
-## 
-## ele51=22.8183
-## ele52=-0.0126
-## ele53=0.0
-## 
-## ele61=210.4097
-## ele62=15.0682
-## ele63=0.0
-## 
-## ele71=1.0147447
-## ele72=0.0000056
-## ele73=0.0
-## 
-## ele81=0.2887038
-## ele82=0.0000011
-## ele83=0.00000027
+elements_2012 = {
+        'T0':2,
+        '11':253.0583,
+        '12':232.6966,
+        '13':0.01583,
+        '14':-0.000080,
+        '21':507.0395,
+        '22':-60.4263,
+        '23':0.06675,
+        '24':0.000076,
+        '31':22.6775,
+        '32':0.0042,
+        '33':-0.00001,
+        '41':210.3335,
+        '42':14.9981,
+        '43':0.0,
+        '51':22.8183,
+        '52':-0.0126,
+        '53':0.0,
+        '61':210.4097,
+        '62':15.0682,
+        '63':0.0,
+        '71':1.0147447,
+        '72':0.0000056,
+        '73':0.0,
+        '81':0.2887038,
+        '82':0.0000011,
+        '83':0.00000027
+        }
 
 time=[0.] * 5
 elevation=[0.] * 5
@@ -134,7 +121,7 @@ def ElevationAzimuth(Lat,Decl,TA):
         Az=360-abs(Az)
     return Alt, Az
 
-def CalculateTime(Long,Lat,Par,Phase):
+def CalculateTime(e,Long,Lat,Par,Phase):
     Tau=0
     L=0
     fuso=0
@@ -145,18 +132,18 @@ def CalculateTime(Long,Lat,Par,Phase):
     T=0
     for k in range(5):
         for rip in range(7):
-            Xa=ele11+ele12*T+ele13*(T*T)+ele14*(T*T*T)
-            Ya=ele21+ele22*T+ele23*(T*T)+ele24*(T*T*T)
-            Xpa=ele12+2*ele13*T+3*ele14*(T*T)
-            Ypa=ele22+2*ele23*T+3*ele24*(T*T)
-            da=ele31+ele32*T+ele33*(T*T)
+            Xa=e['11']+e['12']*T+e['13']*(T*T)+e['14']*(T*T*T)
+            Ya=e['21']+e['22']*T+e['23']*(T*T)+e['24']*(T*T*T)
+            Xpa=e['12']+2*e['13']*T+3*e['14']*(T*T)
+            Ypa=e['22']+2*e['23']*T+3*e['24']*(T*T)
+            da=e['31']+e['32']*T+e['33']*(T*T)
             da=da*rad
-            Ma=ele41+ele42*T+ele43*(T*T)
-            db=ele51+ele52*T+ele53*(T*T)
+            Ma=e['41']+e['42']*T+e['43']*(T*T)
+            db=e['51']+e['52']*T+e['53']*(T*T)
             db=db*rad
-            Mb=ele61+ele62*T+ele63*(T*T)
-            Ra=ele71+ele72*T+ele73*(T*T)
-            Dea=ele81+ele82*T+ele83*(T*T)
+            Mb=e['61']+e['62']*T+e['63']*(T*T)
+            Ra=e['71']+e['72']*T+e['73']*(T*T)
+            Dea=e['81']+e['82']*T+e['83']*(T*T)
             Ha=Ma-Long-0.00417807*DET
             Ha=rad*Ha
             Hb=Mb-Long-0.00417807*DET
@@ -203,7 +190,7 @@ def CalculateTime(Long,Lat,Par,Phase):
             elif k == 4:
                 Tau=-((Xa*Xpa+Ya*Ypa)/n2)+((L/n)*math.sqrt(1-(SM*SM)))
             T=T+Tau
-        TC=ele_T0+T+fuso
+        TC=e['T0']+T+fuso
         TC=TC-DET/3600
         Alt, Az = ElevationAzimuth(Lat,da*degrees,Ha*degrees)
         ang=math.atan2(-Xa,Ya)
@@ -215,7 +202,7 @@ def CalculateTime(Long,Lat,Par,Phase):
         afstand[k]=math.sqrt((Xa*Xa)+(Ya*Ya))
     return time[Phase]
 
-def CalculateParallax():
+def CalculateParallax(e):
     timeA1=HMStoDec(0, 0, 0)
     timeA2=HMStoDec(11, 3, 47)
     timeB1=HMStoDec(0, 0, 0)
@@ -234,16 +221,13 @@ def CalculateParallax():
         longitude=float("5.0")
         longitude=-longitude
         latitude=float("52.0")
-        print("args", longitude, latitude, parzon, fase)
-        timeA=CalculateTime(longitude,latitude,parzon,fase)
-        print("timeA %s"%timeA)
+        timeA=CalculateTime(e,longitude,latitude,parzon,fase)
         longitude=float("20.0")
         longitude=-longitude
         latitude=float("-30.0")
-        timeB=CalculateTime(longitude,latitude,parzon,fase)
+        timeB=CalculateTime(e,longitude,latitude,parzon,fase)
         rekenverschil=(timeA-timeB)
         parzon=((waarneemverschil/rekenverschil)*parzon)
-        print(parzon)
     fout=((0.00278/waarneemverschil)*parzon)
     au=(math.floor(6378.14/((parzon/3600)*rad)))
     parallax = FormatLD(parzon)
@@ -252,6 +236,8 @@ def CalculateParallax():
     print(parallax)
     print(error)
 
-CalculateParallax()
+if __name__ == '__main__':
+
+CalculateParallax(elements_2004)
 
 

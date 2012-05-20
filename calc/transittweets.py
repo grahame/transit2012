@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
+import csv, sys
 sys.path.append('../../undulatus/couchdb-python3/')
 import couchdb
 import time
@@ -9,6 +9,13 @@ from string import digits
 if __name__ == '__main__':
     def log(s):
         print(s, file=sys.stderr)
+
+    def tweet_user(tweet):
+        # cope if we've got a crappy search tweet without embedded user
+        if 'user' in tweet:
+            return tweet['user']['screen_name']
+        else:
+            return tweet['from_user']
 
     def contact_type(text):
         if text.find('enter') != -1:
@@ -37,6 +44,8 @@ if __name__ == '__main__':
                     if len(r) > 0:
                         yield(''.join(r))
                         r = []
+            if len(r) > 0:
+                yield ''.join(r)
             yield(''.join(garbage))
         def gettime(s):
             numparts = list(npiter(s))
@@ -62,23 +71,24 @@ if __name__ == '__main__':
         else:
             return times[0]
 
-    def decode_tweet(tweet):
+    def decode_tweet(id, tweet):
         text = tweet['text']
         ctype = contact_type(text)
         lat, lng = lat_lng(tweet)
-        dt = contact_time(tweet)
-        print(ctype, lat, lng, dt)
+        h, m, s = contact_time(tweet)
+        out.writerow((id, tweet_user(tweet), ctype, lat, lng, h, m, s))
 
     dbname, hashtag = sys.argv[1:]
     srv = couchdb.Server('http://localhost:5984/')
     db = srv[dbname]
+    out = csv.writer(sys.stdout)
     for row in db.view('undulatus/byhashtag')[hashtag]:
         tweet = db[row.id]
         if 'retweeted_status' in tweet:
             log("ignored retweet (id %s)" % tweet['id'])
             continue
         try:
-            decode_tweet(tweet)
+            decode_tweet(row.id, tweet)
         except Exception as e:
             log("can't decode tweet (id %s), exception %s" % (tweet['id'], e))
 
