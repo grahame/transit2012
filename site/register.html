@@ -1,0 +1,132 @@
+<html>
+<head>
+    <title>Transit 2012 &mdash; Social Media Science</title>
+    <link href='http://fonts.googleapis.com/css?family=Nova+Round' rel='stylesheet' type='text/css'>
+    <link href='transit.css' rel='stylesheet' type='text/css'>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+    <script src="sidebar.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    <script src="http://openlayers.org/dev/OpenLayers.js"></script>
+    <link rel="shortcut icon" href="http://transit2012.org/favicon.png" />
+</head>
+<body>
+
+<div id="heading">
+<span id="hdr">Transit 2012</span><br/>
+<span id="subhdr">2012-06-06 // SOCIAL MEDIA SCIENCE</span><br/>
+<span id="subhdr">REGISTER TO OBSERVE</span>
+</div>
+
+<div id="body">
+
+    <form id="registration">
+
+    <p>
+    If you're planning to tweet the transit of Venus, here's the place to register.
+    The information you put up here will be put on a public map on the 
+    <a href="http://transit2012.org/">transit2012.org</a> website.
+    </p>
+
+    <p>
+    If you have already registered and want to update your details, just register 
+    again with the same twitter username and the details will be updated.
+    </p>
+
+    <div style="border: 2px solid black; padding: 8px;">
+
+        <div id="errors" align="center" style="display:none;color:red;"></div>
+
+    <table border="0">
+        <tr>
+            <td>Twitter username:</td>
+            <td><input width="30" id="twitter" /></td>
+        </tr>
+        <tr>
+            <td>Location: (be general, this will be public)</td>
+            <td><input width="80" id="location" /></td>
+        </tr>
+        <tr id="regrow">
+            <td colspan="2" align="right">
+                <input id="register" type="button" value="Register" />
+            </td>
+        </tr>
+    </table>
+
+    <div id="confirm" style="display:none;">
+        <p>
+        Does this look like the place? If so, click confirm. Otherwise, click 
+        cancel and we can try again.
+        </p>
+
+        <p>
+        <img id="locpreview" src="">
+        </p>
+
+        <div align="right">
+            <input id="cancel" type="button" value="Cancel" /> 
+            <input id="confirmbtn" type="button" value="Confirm" />
+        </div>
+    </div>
+
+    </div>
+</div>
+
+<script lang="javascript">
+    $("#cancel").click(function() {
+        $("#regrow")[0].style.display = "";
+        $("#confirm")[0].style.display = "none";
+    });
+    $("#confirmbtn").click(function() {
+        var req = $.ajax({
+            type: "POST",
+            url: "cgi/register.py",
+            data: {
+                twitter : $("#twitter")[0].value,
+                location : $("#location")[0].value,
+            }
+        });
+        req.done(function (resp) {
+            console.log(resp);
+        });
+        req.fail(function (resp) {
+            console.log("fail");
+        });
+    });
+    $("#register").click(function() {
+        var errors = [];
+        var username = $("#twitter")[0].value;
+        if (username.match(/^[a-zA-Z0-9_]{1,15}$/) == null) {
+            errors.push("Invalid twitter username.");
+        }
+        var loc = $("#location")[0].value;
+        if (loc.length == 0) {
+            errors.push("You must specify a location.");
+        }
+        var e = $("#errors");
+        if (errors.length > 0) {
+            e[0].style.display = "";
+            e.empty();
+            e.append(errors.join("<br/>"));
+        } else {
+            e.empty();
+            e[0].style.display = "none";
+        }
+        var mapuri = "http://maps.googleapis.com/maps/api/staticmap?";
+        mapuri += $.param({
+            zoom: "8",
+            size: "512x512",
+            maptype: "roadmap",
+            sensor: false,
+            center: loc,
+        });
+        $("#locpreview")[0].src = mapuri;
+        $("#regrow")[0].style.display = "none";
+        $("#confirm")[0].style.display = "";
+        console.log(mapuri);
+    })
+</script>
+
+</body>
+</html>
