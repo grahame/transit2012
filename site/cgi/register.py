@@ -31,7 +31,7 @@ def register(username, location):
         pass
     lat, lng = geocode(location)
     db[username] = { "location" : location, "lat" : lat, "lng" : lng }
-    return "Thank you, you have been registered."
+    return "You have been registered."
 
 def write_regos():
     tf = "/home/grahame/code/transit2012/tmp/%d.tmp" % (os.getpid())

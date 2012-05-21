@@ -4,6 +4,12 @@
     border-bottom: 1px solid black;
 }
 
+#map {
+    width: 800;
+    height: 400;
+    border: 1px solid black;
+}
+
 #hdr {
     font-size: 300%;
 }

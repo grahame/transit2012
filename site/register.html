@@ -21,6 +21,10 @@
 
 <div id="body">
 
+    <div id="registering" style="display:none;">
+        <p>Registering...</p>
+    </div>
+
     <form id="registration">
 
     <p>
@@ -79,20 +83,22 @@
         $("#confirm")[0].style.display = "none";
     });
     $("#confirmbtn").click(function() {
+        $("#registering")[0].style.display = "";
+        $("#registration")[0].style.display = "none";
         var req = $.ajax({
             type: "POST",
             url: "cgi/register.py",
+            dataType: "json",
             data: {
                 twitter : $("#twitter")[0].value,
-                location : $("#location")[0].value,
+                location : $("#location")[0].value
             }
+        }).done(function (resp) {
+            $("#registering").append("<p>Result: " + resp['result'] + "</p>");
+            $("#registering").append("<p>Thanks for registering! If something went wrong, prod @angrygoat on twitter.</p>");
+            $("#registering").append('<p>You might want to head back to <a href="http://transit2012.org/">transit2012.org</a>.</p>');
         });
-        req.done(function (resp) {
-            console.log(resp);
-        });
-        req.fail(function (resp) {
-            console.log("fail");
-        });
+
     });
     $("#register").click(function() {
         var errors = [];
@@ -119,12 +125,11 @@
             size: "512x512",
             maptype: "roadmap",
             sensor: false,
-            center: loc,
+            center: loc
         });
         $("#locpreview")[0].src = mapuri;
         $("#regrow")[0].style.display = "none";
         $("#confirm")[0].style.display = "";
-        console.log(mapuri);
     })
 </script>
 

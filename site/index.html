@@ -3,9 +3,10 @@
     <title>Transit 2012 &mdash; Social Media Science</title>
     <link href='http://fonts.googleapis.com/css?family=Nova+Round' rel='stylesheet' type='text/css'>
     <link href='transit.css' rel='stylesheet' type='text/css'>
+    <script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-    <script src="sidebar.js"></script>
+    <script src="http://openlayers.org/dev/OpenLayers.js"></script>
+    <script src="transit.js"></script>
     <link rel="shortcut icon" href="http://transit2012.org/favicon.png" />
 <script type="text/javascript">
 
@@ -21,7 +22,7 @@
 
 </script>
 </head>
-<body>
+<body onload="init();">
 
 <div id="heading">
 <span id="hdr">Transit 2012</span><br/>
@@ -50,7 +51,8 @@ the Sun - the <a href="http://en.wikipedia.org/wiki/Astronomical_unit">Astronomi
 <p>
 To participate make one or both of the following observations. Be sure to 
 <a href="http://www.timeanddate.com/worldclock/converter.html">convert the times you record to Universal Time</a>
-(which is often referred to as GMT).
+(which is often referred to as GMT). Consider registering (see below) so 
+we can figure out where we've got coverage.
 </p>
 
 <table align="center" style="border: 3px solid black;">
@@ -103,6 +105,20 @@ steps from the Queensland Government</a> should be followed.
     //searchWidget();
 </script>
 
+<h3>Registrations</h3>
+
+<div id="map">
+</div>
+
+<p>
+The map above shows everyone that has registered to tweet the transit. Registration 
+isn't required, but it lets us see where we have coverage.
+</p>
+
+<p>
+If you wish to register, <a href="register.html">here is the registration page</a>.
+</p>
+
 <h3>How it works</h3>
 
 <p>
@@ -112,8 +128,6 @@ degrees of latitude between them) and applies Delisle's method to calculate the 
 All of these results are then averaged to produce the number that you will see updating
 in real time as observations come in.
 </p>
-
-<p>
 
 <h3>Contact and Credits</h3>
 
