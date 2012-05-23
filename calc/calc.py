@@ -106,9 +106,6 @@ def calculate_parallax(e, obs1, obs2):
     def FormatLD(afs):
         return (math.floor((afs)*1000))/1000
 
-    def HMStoDec(h, m, s):
-        return h + m/60. + s/3600.
-
     def ElevationAzimuth(Lat,Decl,TA):
         TA=TA+360
         TA=CornerRounding(TA)
@@ -213,8 +210,8 @@ def calculate_parallax(e, obs1, obs2):
         fase = 3
     else:
         raise Exception("ctype invalid")
-    time1=HMStoDec(*obs1.time)
-    time2=HMStoDec(*obs2.time)
+    time1=obs1.time
+    time2=obs2.time
     waarneemverschil=time1-time2
     parzon=8.794148
 
@@ -233,16 +230,23 @@ def calculate_parallax(e, obs1, obs2):
     return au, parallax, error
 
 class Observation:
-    def __init__(self, doc_id, username, ctype, lat, lng, h, m, s):
+    def __init__(self, doc_id, text, username, ctype, lat, lng, time, zone, time_source):
         self.doc_id = int(doc_id)
+        self.text = text
         self.username = username
         self.ctype = ctype
         self.lat = float(lat)
         self.lng = float(lng)
-        self.time = (int(h), int(m), int(s))
+        self.time = float(time) - float(zone)
+        self.time_source = time_source
 
     def __repr__(self):
-        return "@%s %s: %gN%gE %d:%d:%d" % (self.username, self.ctype[0], self.lat, self.lng, self.time[0], self.time[1], self.time[2])
+        secs = self.time * 3600.
+        h = secs//3600
+        secs -= h * 3600
+        m = secs//60
+        secs -= m * 60
+        return "%s %s: %gN%gE %d:%d:%d `%s'" % (self.username, self.ctype[0], self.lat, self.lng, h, m, secs, self.text)
 
 class Result:
     def __init__(self, obs1, obs2, res):
