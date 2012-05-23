@@ -1,14 +1,25 @@
 #!/usr/bin/env python3
 
-import csv, sys
+import csv, sys, json, time, datetime
 sys.path.append('../../undulatus/couchdb-python3/')
 import couchdb
-import time
 from string import digits
 
 if __name__ == '__main__':
     def log(s):
         print(s, file=sys.stderr)
+
+    twitter_date_fmt = '%a %b %d %H:%M:%S +0000 %Y'
+    search_date_fmt = '%a, %d %b %Y %H:%M:%S +0000'
+    def datetime_strptime(s):
+        try:
+            return datetime.datetime.strptime(s, twitter_date_fmt)
+        except ValueError:
+            return datetime.datetime.strptime(s, search_date_fmt)
+
+    def tweet_dectime(tweet):
+        dt = datetime_strptime(tweet['created_at'])
+        return dt.hour + dt.minute/60. + dt.second/3600.
 
     def tweet_user(tweet):
         # cope if we've got a crappy search tweet without embedded user
@@ -32,7 +43,7 @@ if __name__ == '__main__':
         lat, lng = coords
         return float(lat), float(lng)
     
-    def contact_time(tweet):
+    def embedded_time(text):
         def npiter(s):
             garbage = []
             r = []
@@ -59,25 +70,52 @@ if __name__ == '__main__':
                     return None
                 if s < 0 or s > 59:
                     return None
-                return h, m, s
+                return h + m/60. + s/3600., numparts[-1]
             except ValueError:
                 return None
-        times = [gettime(t.strip()) for t in tweet['text'].split()]
+        def getzone(s):
+            t = s.strip().upper()
+            if len(t) < 3:
+                return None
+            if t in zonedata:
+                return zonedata[t]
+        toks = text.split()
+        times = [gettime(t.strip()) for t in toks]
         times = [t for t in times if t is not None]
         if len(times) == 0:
-            raise Exception("can't find time in tweet")
+            return None, None
         elif len(times) > 1:
             raise Exception("found more than one time in tweet")
         else:
-            return times[0]
+            time, garbage = times[0]
+            zones = [getzone(t) for t in toks+[garbage]]
+            zones = [t for t in zones if t is not None]
+            if len(zones) > 1:
+                raise Exception("found more than one time zone in tweet")
+            elif len(zones) == 1:
+                zone = zones[0]
+            else:
+                zone = 0.
+            return time, zone
+
+    def contact_time(tweet):
+        time, zone = embedded_time(tweet['text'])
+        if time is None or zone is None:
+            time = tweet_dectime(tweet)
+            zone = 0.
+            method = "tweet_time"
+        else:
+            method = "embedded_time"
+        return time, zone, method
 
     def decode_tweet(id, tweet):
         text = tweet['text']
         ctype = contact_type(text)
         lat, lng = lat_lng(tweet)
-        h, m, s = contact_time(tweet)
-        out.writerow((id, tweet_user(tweet), ctype, lat, lng, h, m, s))
+        out.writerow([id, tweet['text'], tweet_user(tweet), ctype, lat, lng] + list(contact_time(tweet)))
 
+    with open('zones.json') as fd:
+        zonedata = json.load(fd)
     dbname, hashtag = sys.argv[1:]
     srv = couchdb.Server('http://localhost:5984/')
     db = srv[dbname]
@@ -90,5 +128,6 @@ if __name__ == '__main__':
         try:
             decode_tweet(row.id, tweet)
         except Exception as e:
+            raise
             log("can't decode tweet (id %s), exception %s" % (tweet['id'], e))
 

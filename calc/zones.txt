@@ -1,0 +1,139 @@
+ACDT,Australian Central Daylight Time,UTC+10:30
+ACST,Australian Central Standard Time,UTC+09:30
+ACT,ASEAN Common Time,UTC+08
+ADT,Atlantic Daylight Time,UTC−03
+AEDT,Australian Eastern Daylight Time,UTC+11
+AEST,Australian Eastern Standard Time,UTC+10
+AFT,Afghanistan Time,UTC+04:30
+AKDT,Alaska Daylight Time,UTC−08
+AKST,Alaska Standard Time,UTC−09
+AMST,Armenia Summer Time,UTC+05
+AMT,Armenia Time,UTC+04
+ART,Argentina Time,UTC−03
+AST,Arab Standard Time (Kuwait Riyadh),UTC+03
+AST,Arabian Standard Time (Abu Dhabi Muscat),UTC+04
+AST,Arabic Standard Time (Baghdad),UTC+03
+AST,Atlantic Standard Time,UTC−04
+AWDT,Australian Western Daylight Time,UTC+09
+AWST,Australian Western Standard Time,UTC+08
+AZOST,Azores Standard Time,UTC−01
+AZT,Azerbaijan Time,UTC+04
+BDT,Brunei Time,UTC+08
+BIOT,British Indian Ocean Time,UTC+06
+BIT,Baker Island Time,UTC−12
+BOT,Bolivia Time,UTC−04
+BRT,Brasilia Time,UTC−03
+BST,Bangladesh Standard Time,UTC+06
+BST,British Summer Time (British Standard Time from Feb 1968 to Oct 1971),UTC+01
+BTT,Bhutan Time,UTC+06
+CAT,Central Africa Time,UTC+02
+CCT,Cocos Islands Time,UTC+06:30
+CDT,Central Daylight Time (North America),UTC−05
+CEDT,Central European Daylight Time,UTC+02
+CEST,Central European Summer Time (Cf. HAEC),UTC+02
+CET,Central European Time,UTC+01
+CHADT,Chatham Daylight Time,UTC+13:45
+CHAST,Chatham Standard Time,UTC+12:45
+CIST,Clipperton Island Standard Time,UTC−08
+CKT,Cook Island Time,UTC−10
+CLST,Chile Summer Time,UTC−03
+CLT,Chile Standard Time,UTC−04
+COST,Colombia Summer Time,UTC−04
+COT,Colombia Time,UTC−05
+CST,Central Standard Time (North America),UTC−06
+CST,China Standard Time,UTC+08
+CST,Central Standard Time (Australia),UTC+09:30
+CT,China Time,UTC+08
+CVT,Cape Verde Time,UTC−01
+CXT,Christmas Island Time,UTC+07
+CHST,Chamorro Standard Time,UTC+10
+DFT,AIX specific equivalent of Central European Time,UTC+01
+EAST,Easter Island Standard Time,UTC−06
+EAT,East Africa Time,UTC+03
+ECT,Eastern Caribbean Time (does not recognise DST),UTC−04
+ECT,Ecuador Time,UTC−05
+EDT,Eastern Daylight Time (North America),UTC−04
+EEDT,Eastern European Daylight Time,UTC+03
+EEST,Eastern European Summer Time,UTC+03
+EET,Eastern European Time,UTC+02
+EST,Eastern Standard Time (North America),UTC−05
+FET,Further-eastern_European_Time,UTC+03
+FJT,Fiji Time,UTC+12
+FKST,Falkland Islands Summer Time,UTC−03
+FKT,Falkland Islands Time,UTC−04
+GALT,Galapagos Time,UTC−06
+GET,Georgia Standard Time,UTC+04
+GFT,French Guiana Time,UTC−03
+GILT,Gilbert Island Time,UTC+12
+GIT,Gambier Island Time,UTC−09
+GMT,Greenwich Mean Time,UTC
+GST,South Georgia and the South Sandwich Islands,UTC−02
+GST,Gulf Standard Time,UTC+04
+GYT,Guyana Time,UTC−04
+HADT,Hawaii-Aleutian Daylight Time,UTC−09
+HAEC,Heure Avancée d'Europe Centrale francised name for CEST,UTC+02
+HAST,Hawaii-Aleutian Standard Time,UTC−10
+HKT,Hong Kong Time,UTC+08
+HMT,Heard and McDonald Islands Time,UTC+05
+HST,Hawaii Standard Time,UTC−10
+ICT,Indochina Time,UTC+07
+IDT,Israeli Daylight Time,UTC+03
+IRKT,Irkutsk Time,UTC+08
+IRST,Iran Standard Time,UTC+03:30
+IST,Indian Standard Time,UTC+05:30
+IST,Irish Summer Time,UTC+01
+IST,Israel Standard Time,UTC+02
+JST,Japan Standard Time,UTC+09
+KRAT,Krasnoyarsk Time,UTC+07
+KST,Korea Standard Time,UTC+09
+LHST,Lord Howe Standard Time,UTC+10:30
+LINT,Line Islands Time,UTC+14
+MAGT,Magadan Time,UTC+11
+MDT,Mountain Daylight Time (North America),UTC−06
+MET,Middle European Time Same zone as CET,UTC+01
+MEST,Middle European Saving Time Same zone as CEST,UTC+02
+MIT,Marquesas Islands Time,UTC−09:30
+MSD,Moscow Summer Time,UTC+04
+MSK,Moscow Standard Time,UTC+03
+MST,Malaysian Standard Time,UTC+08
+MST,Mountain Standard Time (North America),UTC−07
+MST,Myanmar Standard Time,UTC+06:30
+MUT,Mauritius Time,UTC+04
+MYT,Malaysia Time,UTC+08
+NDT,Newfoundland Daylight Time,UTC−02:30
+NFT,Norfolk Time[1],UTC+11:30
+NPT,Nepal Time,UTC+05:45
+NST,Newfoundland Standard Time,UTC−03:30
+NT,Newfoundland Time,UTC−03:30
+NZDT,New Zealand Daylight Time,UTC+13
+NZST,New Zealand Standard Time,UTC+12
+OMST,Omsk Time,UTC+06
+PDT,Pacific Daylight Time (North America),UTC−07
+PETT,Kamchatka Time,UTC+12
+PHOT,Phoenix Island Time,UTC+13
+PKT,Pakistan Standard Time,UTC+05
+PST,Pacific Standard Time (North America),UTC−08
+PST,Philippine Standard Time,UTC+08
+RET,Réunion Time,UTC+04
+SAMT,Samara Time,UTC+04
+SAST,South African Standard Time,UTC+02
+SBT,Solomon Islands Time,UTC+11
+SCT,Seychelles Time,UTC+04
+SGT,Singapore Time,UTC+08
+SLT,Sri Lanka Time,UTC+05:30
+SST,Samoa Standard Time,UTC−11
+SST,Singapore Standard Time,UTC+08
+TAHT,Tahiti Time,UTC−10
+THA,Thailand Standard Time,UTC+07
+UTC,Coordinated Universal Time,UTC
+UYST,Uruguay Summer Time,UTC−02
+UYT,Uruguay Standard Time,UTC−03
+VET,Venezuelan Standard Time,UTC−04:30
+VLAT,Vladivostok Time,UTC+10
+WAT,West Africa Time,UTC+01
+WEDT,Western European Daylight Time,UTC+01
+WEST,Western European Summer Time,UTC+01
+WET,Western European Time,UTC
+WST,Western Standard Time,UTC+08
+YAKT,Yakutsk Time,UTC+09
+YEKT,Yekaterinburg Time,UTC+05
