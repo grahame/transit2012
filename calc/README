@@ -1,5 +1,11 @@
 usage, eg:
+
+With a couchdb into which undulatus has logged tweets for 
+your hash tag:
+
 python3 transittweets.py venusobs 'transit04'  > 2004.csv
 python3  calc.py 2004 2004.csv
 
+You can get undulatus here:
+https://github.com/grahame/undulatus
 
