@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import csv, sys, json, time, datetime
-sys.path.append('../../undulatus/couchdb-python3/')
+sys.path.append('../couchdb-python3/')
 import couchdb
 from string import digits
 
