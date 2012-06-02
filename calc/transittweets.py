@@ -109,10 +109,13 @@ if __name__ == '__main__':
         return time, zone, method
 
     def decode_tweet(id, tweet):
-        text = tweet['text']
-        ctype = contact_type(text)
-        lat, lng = lat_lng(tweet)
-        out.writerow([id, tweet['text'], tweet_user(tweet), ctype, lat, lng] + list(contact_time(tweet)))
+        try:
+            text = tweet['text']
+            ctype = contact_type(text)
+            lat, lng = lat_lng(tweet)
+            out.writerow([id, tweet['text'], tweet_user(tweet), ctype, lat, lng] + list(contact_time(tweet)))
+        except Exception as e:
+            print(e, file=sys.stderr)
 
     with open('zones.json') as fd:
         zonedata = json.load(fd)
