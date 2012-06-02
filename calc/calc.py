@@ -3,7 +3,7 @@
 # The program code for calculating the contact time is based on code by Franco Martinelli and edited by Steven M. of Roode.
 # The determination of the solar parallax goes back to the principle that in 1716 by Edmond Halley was formulated.
 
-import math, sys, csv
+import math, sys, csv, json
 from pprint import pprint
 from itertools import combinations
 
@@ -304,7 +304,12 @@ if __name__ == '__main__':
         avg = sum([t.au for t in results]) / len(results)
     else:
         avg = 0.0
-    pprint(results)
-    print("%s average result from chosen pairs: 1 AU = %skm" % (year, avg))
+
+    j = {}
+    j['calculations'] = [str(t) for t in results]
+    j['nenter'] = len(enter)
+    j['nleft'] = len(left)
+    j['result'] = avg
+    json.dump(j, sys.stdout)
 
 
