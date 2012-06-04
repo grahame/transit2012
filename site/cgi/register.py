@@ -19,6 +19,7 @@ def geocode(address):
     return loc['lat'], loc['lng']
 
 def register(username, location):
+    username = username.replace('@', '')
     if not re.match(r'^[a-zA-Z0-9_]{1,15}$', username):
         return "invalid twitter username"
     if location == "":

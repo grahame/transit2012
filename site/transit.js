@@ -1,4 +1,4 @@
-function init() {
+function init(year) {
     var map = new OpenLayers.Map('map');
     var gphy = new OpenLayers.Layer.Google(
         "Google Physical",
@@ -13,7 +13,8 @@ function init() {
         map.getProjectionObject()
     ), 1);
 
-    $.getJSON("/regos/regos.json", function(data) {
+    var date = new Date();
+    $.getJSON("/regos/regos.json?" + date.getTime(), function(data) {
         var markers = new OpenLayers.Layer.Markers( "Markers" );
         var icon = new OpenLayers.Icon('marker.png', size, offset);
         map.addLayer(markers);
@@ -32,6 +33,39 @@ function init() {
             markers.addMarker(new OpenLayers.Marker(llat, icon.clone()));
         }
     });
-}
 
-init();
+    var getLive = function() {
+        var tweet_list = function(descr, l) {
+            var par = $("<p><strong>" + descr + ":</strong> </p>");
+            if (l) {
+                for (i in l) {
+                    if (i > 0) {
+                        par.append($("<span>, </span>"));
+                    }
+                    var tweet = l[i];
+                    var user = tweet[0];
+                    var link = tweet[1];
+                    par.append($("<a href=\"" + link + "\">@" + user + "</a>"));
+                }
+            }
+            return par;
+        }
+        var date = new Date();
+        $.getJSON("/calc/"+year+".json?" + date.getTime(), function(data) {
+            var e = $("#live");
+            e.empty();
+            var par = $("<p><strong>Updating live...</strong><br/>" + data['nenter'] + " entry observations, " + data['nleft'] + " leaving observations. Avg. result 1AU = " + data['result'] + "km</p>");
+            e.append(par);
+            e.append(tweet_list("Entry observations", data['enter_links']));
+            e.append(tweet_list("Exit observations", data['left_links']));
+        });
+    }
+
+    var liveUpdate = function()
+    {
+        getLive();
+        setTimeout(getLive, 30 * 1000);
+    }
+
+    liveUpdate();
+}

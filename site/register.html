@@ -103,7 +103,7 @@
     $("#register").click(function() {
         var errors = [];
         var username = $("#twitter")[0].value;
-        if (username.match(/^[a-zA-Z0-9_]{1,15}$/) == null) {
+        if (username.match(/^[\@a-zA-Z0-9_]{1,16}$/) == null) {
             errors.push("Invalid twitter username.");
         }
         var loc = $("#location")[0].value;

@@ -292,10 +292,9 @@ if __name__ == '__main__':
     left = weed_dups(left)
 
     def tweet_links(l):
-        by_user = dict([(obs.username, obs.doc_id) for obs in l])
         rv = []
-        for user in sorted(by_user):
-            rv.append([user, 'https://twitter.com/%s/status/%s' % (user, by_user[user])])
+        for obs in sorted(l, key=lambda obs: obs.time):
+            rv.append([obs.username, 'https://twitter.com/%s/status/%s' % (obs.username, obs.doc_id)])
         return rv
     def pair_pick(l):
         for obs1, obs2 in combinations(l, 2):
