@@ -26,5 +26,5 @@ with open("zones.txt") as fd:
                 utc_offset += int(sp[1])
         if grps[0] and grps[0] != '+':
             utc_offset = -utc_offset
-        zones[abbrev] = utc_offset
+        zones[abbrev] = utc_offset / 60. # decimal hours
 json.dump(zones, sys.stdout)

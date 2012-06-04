@@ -300,7 +300,7 @@ if __name__ == '__main__':
             results.append(Result(obs1, obs2, calculate_parallax(elements, obs1, obs2)))
     calculate(pair_pick(enter))
     calculate(pair_pick(left))
-    if len(results) > 1:
+    if len(results) > 0:
         avg = sum([t.au for t in results]) / len(results)
     else:
         avg = 0.0
