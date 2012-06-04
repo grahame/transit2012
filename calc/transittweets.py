@@ -3,7 +3,7 @@
 import csv, sys, json, time, datetime
 sys.path.append('../couchdb-python3/')
 import couchdb
-from string import digits
+from string import digits, ascii_letters
 
 if __name__ == '__main__':
     def log(s):
@@ -57,7 +57,7 @@ if __name__ == '__main__':
                         r = []
             if len(r) > 0:
                 yield ''.join(r)
-            yield(''.join(garbage))
+            yield(''.join(''.join([t for t in garbage if t in ascii_letters])))
         def gettime(s):
             numparts = list(npiter(s))
             if len(numparts) != 4:
@@ -78,34 +78,37 @@ if __name__ == '__main__':
             if len(t) < 3:
                 return None
             if t in zonedata:
-                return zonedata[t]
+                return t, zonedata[t]
         toks = text.split()
         times = [gettime(t.strip()) for t in toks]
         times = [t for t in times if t is not None]
         if len(times) == 0:
-            return None, None
+            return None, None, "no time found"
         elif len(times) > 1:
             raise Exception("found more than one time in tweet")
         else:
             time, garbage = times[0]
-            zones = [getzone(t) for t in toks+[garbage]]
+            possibilities = toks+[garbage]
+            zones = [getzone(t) for t in possibilities]
             zones = [t for t in zones if t is not None]
             if len(zones) > 1:
                 raise Exception("found more than one time zone in tweet")
             elif len(zones) == 1:
-                zone = zones[0]
+                zone_name, zone = zones[0]
+                notes = "zone found: %s" % (zone_name)
             else:
+                notes = "no zone, assume GMT"
                 zone = 0.
-            return time, zone
+            return time, zone, notes
 
     def contact_time(tweet):
-        time, zone = embedded_time(tweet['text'])
+        time, zone, notes = embedded_time(tweet['text'])
         if time is None or zone is None:
             time = tweet_dectime(tweet)
             zone = 0.
             method = "tweet_time"
         else:
-            method = "embedded_time"
+            method = "embedded_time, " + notes
         return time, zone, method
 
     def decode_tweet(id, tweet):
