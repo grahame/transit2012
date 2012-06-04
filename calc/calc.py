@@ -290,6 +290,13 @@ if __name__ == '__main__':
         return r
     enter = weed_dups(enter)
     left = weed_dups(left)
+
+    def tweet_links(l):
+        by_user = dict([(obs.username, obs.doc_id) for obs in l])
+        rv = []
+        for user in sorted(by_user):
+            rv.append([user, 'https://twitter.com/%s/status/%s' % (user, by_user[user])])
+        return rv
     def pair_pick(l):
         for obs1, obs2 in combinations(l, 2):
             if abs(obs1.lat - obs2.lat) > 10:
@@ -297,19 +304,24 @@ if __name__ == '__main__':
     results = []
     def calculate(it):
         for obs1, obs2 in it:
-            results.append(Result(obs1, obs2, calculate_parallax(elements, obs1, obs2)))
+            try:
+                results.append(Result(obs1, obs2, calculate_parallax(elements, obs1, obs2)))
+            except Exception as e:
+                print("Exception with %s %s" % (obs1, obs2))
+                print(e, file=sys.stderr)
     calculate(pair_pick(enter))
     calculate(pair_pick(left))
     if len(results) > 0:
         avg = sum([t.au for t in results]) / len(results)
     else:
         avg = 0.0
-
     j = {}
     j['calculations'] = [str(t) for t in results]
     j['nenter'] = len(enter)
     j['nleft'] = len(left)
     j['result'] = avg
+    j['enter_links'] = tweet_links(enter)
+    j['left_links'] = tweet_links(left)
     json.dump(j, sys.stdout)
 
 
