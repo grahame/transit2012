@@ -252,6 +252,7 @@ class Result:
     def __init__(self, obs1, obs2, res):
         self.obs1 = obs1
         self.obs2 = obs2
+        self.lat = abs(obs1.lat - obs2.lat)
         self.au, self.parallax, self.error = res
 
     def __repr__(self):
@@ -298,22 +299,24 @@ if __name__ == '__main__':
         return rv
     def pair_pick(l):
         for obs1, obs2 in combinations(l, 2):
-            if abs(obs1.lat - obs2.lat) > 10:
+            if abs(obs1.lat - obs2.lat) > 40:
                 yield obs1, obs2
     results = []
     def calculate(it):
         for obs1, obs2 in it:
             try:
-                results.append(Result(obs1, obs2, calculate_parallax(elements, obs1, obs2)))
+                res = Result(obs1, obs2, calculate_parallax(elements, obs1, obs2))
+                results.append(res)
             except Exception as e:
                 print("Exception with %s %s" % (obs1, obs2), file=sys.stderr)
                 print(e, file=sys.stderr)
     calculate(pair_pick(enter))
     calculate(pair_pick(left))
+    # averaging logic totally fell down, just use the best pair
     results = [t for t in results if t.au > 0 ]
-    print([t.au for t in results], file=sys.stderr)
     if len(results) > 0:
-        avg = sum([t.au for t in results]) / len(results)
+        best = max([t.lat for t in results])
+        avg = [t.au for t in results if t.lat == best][0]
     else:
         avg = 0.0
     j = {}
