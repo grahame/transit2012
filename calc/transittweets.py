@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import csv, sys, json, time, datetime
+import csv, sys, json, time, datetime, traceback
 sys.path.append('../couchdb-python3/')
 import couchdb
 from string import digits, ascii_letters
@@ -29,16 +29,17 @@ if __name__ == '__main__':
             return tweet['from_user']
 
     def contact_type(text):
-        if text.find('enter') != -1:
+        text = text.lower()
+        if text.find('enter') != -1 or text.find('interior') != -1 or text.find('ingress') == -1:
             return 'enter'
-        elif text.find('leave') != -1 or text.find('left') != -1:
+        elif text.find('leave') != -1 or text.find('left') != -1 or text.find('egress') == -1:
             return 'left'
         else:
             raise Exception("unknown contact; `%s'" % (text))
     
     def lat_lng(tweet):
-        if not "geo" in tweet:
-            raise Exception("tweet is not geocoded")
+        if not "geo" in tweet or tweet['geo'] is None:
+            raise Exception("tweet is not geocoded %s" % (tweet.get('text')))
         coords = tweet['geo']['coordinates']
         lat, lng = coords
         return float(lat), float(lng)
@@ -118,7 +119,7 @@ if __name__ == '__main__':
             lat, lng = lat_lng(tweet)
             out.writerow([id, tweet['text'], tweet_user(tweet), ctype, lat, lng] + list(contact_time(tweet)))
         except Exception as e:
-            print(e, file=sys.stderr)
+            print("decode %s" % (e), file=sys.stderr)
 
     with open('zones.json') as fd:
         zonedata = json.load(fd)

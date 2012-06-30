@@ -306,10 +306,12 @@ if __name__ == '__main__':
             try:
                 results.append(Result(obs1, obs2, calculate_parallax(elements, obs1, obs2)))
             except Exception as e:
-                print("Exception with %s %s" % (obs1, obs2))
+                print("Exception with %s %s" % (obs1, obs2), file=sys.stderr)
                 print(e, file=sys.stderr)
     calculate(pair_pick(enter))
     calculate(pair_pick(left))
+    results = [t for t in results if t.au > 0 ]
+    print([t.au for t in results], file=sys.stderr)
     if len(results) > 0:
         avg = sum([t.au for t in results]) / len(results)
     else:
